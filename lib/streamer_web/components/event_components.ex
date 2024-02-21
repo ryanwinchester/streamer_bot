@@ -14,8 +14,8 @@ defmodule StreamerWeb.EventComponents do
   def twitch_event(%{event: %Events.Follow{}} = assigns) do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
-      <div class="relative">
-        <video class="absolute" src={@video} autoplay="true" />
+      <div class="relative rounded-lg">
+        <video class="absolute" src={~p"/overlay/video/#{@video}"} autoplay="true" />
         <span class="absolute text-center text-3xl font-semibold text-gray-800 [text-shadow:_1px_1px_0_rgb(255_255_255_/_50%)] left-0 right-0 top-4">
           Hello, <%= @event.user_name %><br>
           Thanks for following!
@@ -35,7 +35,7 @@ defmodule StreamerWeb.EventComponents do
 
   def twitch_event(%{event: %Events.SubGift{total: total}} = assigns) when total >= 10 do
     ~H"""
-    <div class={["mx-auto w-1/3", @class]}>
+    <div class={["mx-auto w-1/3 rounded-lg", @class]}>
       <video src={~p"/overlay/video/earth-is-my-everything.webm"} autoplay="true" />
     </div>
     """
@@ -44,7 +44,7 @@ defmodule StreamerWeb.EventComponents do
 
   def twitch_event(%{event: %Events.SubGift{total: total}} = assigns) when total >= 5 do
     ~H"""
-    <div class={["mx-auto w-1/3", @class]}>
+    <div class={["mx-auto w-1/3 rounded-lg", @class]}>
       <video src={~p"/overlay/video/earth-blaster.webm"} autoplay="true" />
     </div>
     """
@@ -52,7 +52,7 @@ defmodule StreamerWeb.EventComponents do
 
   def twitch_event(%{event: %Events.SubGift{} = _event} = assigns) do
     ~H"""
-    <div class={["mx-auto w-1/3", @class]}>
+    <div class={["mx-auto w-1/3 rounded-lg", @class]}>
       <video src={~p"/overlay/video/earth-blaster.webm"} autoplay="true" />
     </div>
     """

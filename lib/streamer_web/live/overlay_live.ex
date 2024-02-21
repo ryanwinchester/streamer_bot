@@ -25,9 +25,9 @@ defmodule StreamerWeb.OverlayLive do
 
     video =
       Enum.random([
-        ~p"/overlay/video/hello-joe.webm",
-        ~p"/overlay/video/hello-mike.webm",
-        ~p"/overlay/video/hello-robert.webm"
+        "hello-joe.webm",
+        "hello-mike.webm",
+        "hello-robert.webm"
       ])
 
     socket =

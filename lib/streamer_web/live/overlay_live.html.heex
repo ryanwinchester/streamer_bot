@@ -1,0 +1,14 @@
+<h1 class="text-8xl text-center text-gray-100 font-bold top-10 mx-auto">
+  <%!-- HELLO CHAT THIS IS AN OVERLAY --%>
+</h1>
+
+<div id="alert-container" class="p-8 relative">
+
+  <.twitch_event
+    :for={{id, event} <- @events}
+    id={"event-#{id}"}
+    event={event}
+    {assigns}
+  />
+
+</div>

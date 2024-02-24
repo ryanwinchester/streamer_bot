@@ -63,6 +63,9 @@ defmodule StreamerWeb.OverlayLive do
   end
 
   def handle_info({:twitch, event}, socket) do
+    if match?(%TwitchEventSub.Events.ChannelPointsRedemption{}, event) do
+      Logger.warning(inspect(event))
+    end
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
     {:noreply, update(socket, :events, &[{id, event} | &1])}

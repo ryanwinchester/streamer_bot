@@ -1,10 +1,6 @@
-<h1 class="text-8xl text-center text-gray-100 font-bold top-10 mx-auto">
-  <%!-- HELLO CHAT THIS IS AN OVERLAY --%>
-</h1>
+<div id="falling-items-container" class="absolute w-full h-full z-20"></div>
 
-<div id="alert-container" class="p-8 relative">
-  <div id="falling-items-container"></div>
-
+<div id="alert-container" class="p-8 absolute w-full h-full top-0 z-10">
   <.twitch_event
     :for={{id, event} <- @events}
     id={"event-#{id}"}

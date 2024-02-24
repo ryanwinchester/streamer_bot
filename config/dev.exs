@@ -1,5 +1,9 @@
 import Config
 
+config :streamer, Streamer.SongQueue,
+  max_per_user: 3,
+  allow_consecutive?: true
+
 # Configure your database
 config :streamer, Streamer.Repo,
   username: "postgres",

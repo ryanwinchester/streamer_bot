@@ -7,3 +7,23 @@ body {
     width: 1920px;
     height: 1080px;
 }
+
+#falling-items-container {
+  position: relative;
+  width: 100%;
+  height: 100vh; /* Adjust the height as needed */
+  overflow: hidden; /* Prevents images from overflowing the viewport */
+}
+
+.falling-animation {
+  animation-name: fall;
+  animation-duration: 4s; /* Adjust duration as needed */
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(100vh); /* Adjust if you want a different end position */
+  }
+}

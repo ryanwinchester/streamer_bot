@@ -23,12 +23,39 @@ import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
 
 let csrfToken = document.querySelector("meta[name='csrf-token']").getAttribute("content")
-let liveSocket = new LiveSocket("/live", Socket, {params: {_csrf_token: csrfToken}})
+
+let liveSocket = new LiveSocket("/live", Socket, {
+  params: {_csrf_token: csrfToken}
+});
 
 // Show progress bar on live navigation and form submits
 topbar.config({barColors: {0: "#29d"}, shadowColor: "rgba(0, 0, 0, .3)"})
 window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
 window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
+
+window.addEventListener("phx:falling-items", (event) => {
+  const img_src = event.detail.img_src;
+  let count = Number(event.detail.count);
+  count = count > 150 ? 150 : count;
+
+  for (let i = 0; i < count; i++) {
+    // Random delay, adjust range as needed
+    const delay = Math.random() * 5;
+    createFallingImage(img_src, delay);
+  }
+});
+
+function createFallingImage(src, delay) {
+  const image = document.createElement('img');
+  image.src = src;
+  image.style.position = 'absolute';
+  image.style.top = '0';
+  image.style.left = `${Math.random() * 100}%`; // Random position across the top
+  image.classList.add('falling-animation');
+  image.style.animationDelay = `${delay}s`; // Different delay times
+
+  document.getElementById('falling-items-container').appendChild(image);
+}
 
 // connect if there are any LiveViews on the page
 liveSocket.connect()
@@ -38,4 +65,3 @@ liveSocket.connect()
 // >> liveSocket.enableLatencySim(1000)  // enabled for duration of browser session
 // >> liveSocket.disableLatencySim()
 window.liveSocket = liveSocket
-

@@ -3,6 +3,7 @@
 </h1>
 
 <div id="alert-container" class="p-8 relative">
+  <div id="falling-items-container"></div>
 
   <.twitch_event
     :for={{id, event} <- @events}
@@ -10,5 +11,4 @@
     event={event}
     {assigns}
   />
-
 </div>

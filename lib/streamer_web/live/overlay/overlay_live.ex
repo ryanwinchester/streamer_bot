@@ -3,7 +3,7 @@ defmodule StreamerWeb.OverlayLive do
 
   require Logger
 
-  import StreamerWeb.EventComponents
+  import StreamerWeb.Overlay.EventComponents
 
   @impl true
   def mount(_params, _session, socket) do
@@ -33,6 +33,30 @@ defmodule StreamerWeb.OverlayLive do
     socket =
       socket
       |> assign(:video, video)
+      |> update(:events, &[{id, event} | &1])
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:twitch, %TwitchEventSub.Events.ChatNotification{raid: %TwitchEventSub.Fields.Raid{} = raid} = event}, socket) do
+    id = :erlang.phash2(event)
+    Process.send_after(self(), {:remove_event, id}, 10_000)
+
+    socket =
+      socket
+      |> push_event("falling-items", %{count: raid.viewer_count, img_src: event.raid.profile_image_url})
+      |> update(:events, &[{id, event} | &1])
+
+    {:noreply, socket}
+  end
+
+  def handle_info({:twitch, %TwitchEventSub.Events.Cheer{} = event}, socket) do
+    id = :erlang.phash2(event)
+    Process.send_after(self(), {:remove_event, id}, 10_000)
+
+    socket =
+      socket
+      |> push_event("falling-items", %{count: event.bits, img_src: ~p"/overlay/images/bit.gif"})
       |> update(:events, &[{id, event} | &1])
 
     {:noreply, socket}

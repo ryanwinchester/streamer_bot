@@ -36,6 +36,7 @@ defmodule Streamer.SpotifyClient do
 
   @doc """
   Get the current song.
+  See: https://developer.spotify.com/documentation/web-api/reference/get-the-users-currently-playing-track
   """
   @spec get_current_track!() :: map()
   def get_current_track! do

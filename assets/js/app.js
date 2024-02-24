@@ -34,25 +34,30 @@ window.addEventListener("phx:page-loading-start", _info => topbar.show(300))
 window.addEventListener("phx:page-loading-stop", _info => topbar.hide())
 
 window.addEventListener("phx:falling-items", (event) => {
-  const img_src = event.detail.img_src;
+  // For now, we cap the number of bits to 150. In the future we can add some
+  // special styles for larger bit amounts.
   let count = Number(event.detail.count);
   count = count > 150 ? 150 : count;
 
   for (let i = 0; i < count; i++) {
-    // Random delay, adjust range as needed
-    const delay = Math.random() * 5;
-    createFallingImage(img_src, delay);
+    createFallingImage(event.detail.img_src);
   }
 });
 
-function createFallingImage(src, delay) {
+/**
+ * Create an image at a random location across the top, with a random
+ * animation delay.
+ *
+ * @param {string} src - The src uri of the image.
+ */
+function createFallingImage(src) {
   const image = document.createElement('img');
   image.src = src;
   image.style.position = 'absolute';
   image.style.top = '0';
-  image.style.left = `${Math.random() * 100}%`; // Random position across the top
+  image.style.left = `${Math.random() * 100}%`;
   image.classList.add('falling-animation');
-  image.style.animationDelay = `${delay}s`; // Different delay times
+  image.style.animationDelay = `${Math.random() * 5}s`;
 
   document.getElementById('falling-items-container').appendChild(image);
 }

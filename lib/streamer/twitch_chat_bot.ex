@@ -55,4 +55,9 @@ defmodule Streamer.TwitchChatBot do
         say(channel, "@#{user} nothing is playing")
     end
   end
+
+  def handle_event(event) do
+    super(event)
+    Streamer.broadcast("twitch:events", {:twitch, event})
+  end
 end

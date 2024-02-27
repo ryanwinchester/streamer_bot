@@ -38,17 +38,17 @@ defmodule StreamerWeb.OverlayLive do
     {:noreply, socket}
   end
 
-  def handle_info({:twitch, %TwitchEventSub.Events.ChatNotification{raid: %TwitchEventSub.Fields.Raid{} = raid} = event}, socket) do
-    id = :erlang.phash2(event)
-    Process.send_after(self(), {:remove_event, id}, 10_000)
+  # def handle_info({:twitch, %TwitchEventSub.Events.ChatNotification{raid: %TwitchEventSub.Fields.Raid{} = raid} = event}, socket) do
+  #   id = :erlang.phash2(event)
+  #   Process.send_after(self(), {:remove_event, id}, 10_000)
 
-    socket =
-      socket
-      |> push_event("falling-items", %{count: raid.viewer_count, img_src: event.raid.profile_image_url})
-      |> update(:events, &[{id, event} | &1])
+  #   socket =
+  #     socket
+  #     |> push_event("exploding-items", %{count: raid.viewer_count, img_src: event.raid.profile_image_url})
+  #     |> update(:events, &[{id, event} | &1])
 
-    {:noreply, socket}
-  end
+  #   {:noreply, socket}
+  # end
 
   def handle_info({:twitch, %TwitchEventSub.Events.Cheer{} = event}, socket) do
     id = :erlang.phash2(event)
@@ -62,10 +62,19 @@ defmodule StreamerWeb.OverlayLive do
     {:noreply, socket}
   end
 
+  def handle_info({:twitch, %TwitchChat.Events.Raid{} = event}, socket) do
+    id = :erlang.phash2(event)
+    Process.send_after(self(), {:remove_event, id}, 10_000)
+
+    socket =
+      socket
+      |> push_event("exploding-items", %{count: event.viewer_count, img_src: event.profile_image_url})
+      |> update(:events, &[{id, event} | &1])
+
+    {:noreply, socket}
+  end
+
   def handle_info({:twitch, event}, socket) do
-    if match?(%TwitchEventSub.Events.ChannelPointsRedemption{}, event) do
-      Logger.warning(inspect(event))
-    end
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
     {:noreply, update(socket, :events, &[{id, event} | &1])}

@@ -1,23 +1,4 @@
-// If you want to use Phoenix channels, run `mix help phx.gen.channel`
-// to get started and then uncomment the line below.
-// import "./user_socket.js"
-
-// You can include dependencies in two ways.
-//
-// The simplest option is to put them in assets/vendor and
-// import them using relative paths:
-//
-//     import "../vendor/some-package.js"
-//
-// Alternatively, you can `npm install some-package --prefix assets` and import
-// them using a path starting with the package name:
-//
-//     import "some-package"
-//
-
-// Include phoenix_html to handle method=PUT/DELETE in forms and buttons.
 import "phoenix_html"
-// Establish Phoenix Socket and LiveView configuration.
 import {Socket} from "phoenix"
 import {LiveSocket} from "phoenix_live_view"
 import topbar from "../vendor/topbar"
@@ -44,6 +25,19 @@ window.addEventListener("phx:falling-items", (event) => {
   }
 });
 
+window.addEventListener("phx:exploding-items", (event) => {
+  // For now, we cap the number of bits to 150. In the future we can add some
+  // special styles for larger bit amounts.
+  let count = Number(event.detail.count);
+  count = count > 150 ? 150 : count;
+
+  for (let i = 0; i < 5; i++) {
+    for (let j = 0; j < count; j++) {
+      createExplodingImage(event.detail.img_src);
+    }
+  }
+});
+
 /**
  * Create an image at a random location across the top, with a random
  * animation delay.
@@ -51,6 +45,7 @@ window.addEventListener("phx:falling-items", (event) => {
  * @param {string} src - The src uri of the image.
  */
 function createFallingImage(src) {
+  const imageContainer = document.getElementById('falling-items-container');
   const image = document.createElement('img');
   image.src = src;
   image.style.position = 'absolute';
@@ -59,7 +54,44 @@ function createFallingImage(src) {
   image.classList.add('falling-animation');
   image.style.animationDelay = `${Math.random() * 5}s`;
 
-  document.getElementById('falling-items-container').appendChild(image);
+  imageContainer.appendChild(image);
+
+  // Remove the image from the DOM when the animation is finished.
+  image.addEventListener('animationend', () => {
+    imageContainer.removeChild(image);
+  });
+}
+
+/**
+ * Create an image that explodes outwards.
+ *
+ * @param {string} src - The src uri of the image.
+ */
+function createExplodingImage(src) {
+  const imageContainer = document.getElementById('exploding-items-container');
+  const image = document.createElement('img');
+  image.src = src;
+  image.classList.add('explode-animation');
+  image.style.animationName = 'explode';
+  image.style.animationDuration = `${1 + Math.random() * 2}s`;
+
+  // Calculate random direction and distance
+  const angle = Math.random() * 360; // Angle in degrees
+  const distance = 100 + Math.random() * 1920; // Distance in pixels
+  const radians = angle * Math.PI / 180;
+  const translateX = Math.cos(radians) * distance;
+  const translateY = Math.sin(radians) * distance;
+
+  // Set CSS variables for translation
+  image.style.setProperty('--translateX', `${translateX}px`);
+  image.style.setProperty('--translateY', `${translateY}px`);
+
+  imageContainer.appendChild(image);
+
+  // Remove the image from the DOM when the animation is finished.
+  image.addEventListener('animationend', () => {
+    imageContainer.removeChild(image);
+  });
 }
 
 // connect if there are any LiveViews on the page

@@ -11,7 +11,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
   attr :class, :string, default: ""
   attr :event, :map, required: true
 
-  def twitch_event(%{event: %Events.ChannelPointsRedemption{reward_title: "First"}} = assigns) do
+  def twitch_event(%{event: %Events.ChannelPointsRedemption{reward_title: "first"}} = assigns) do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
@@ -19,6 +19,34 @@ defmodule StreamerWeb.Overlay.EventComponents do
         <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
           <%= @event.user_name %> was first
+        </span>
+      </div>
+    </div>
+    """
+  end
+
+  def twitch_event(%{event: %Events.ChannelPointsRedemption{reward_title: "second"}} = assigns) do
+    ~H"""
+    <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
+      <div class="relative rounded-lg">
+        <%!-- <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" /> --%>
+        <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
+        <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
+          <%= @event.user_name %> was second
+        </span>
+      </div>
+    </div>
+    """
+  end
+
+  def twitch_event(%{event: %Events.ChannelPointsRedemption{reward_title: "third"}} = assigns) do
+    ~H"""
+    <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
+      <div class="relative rounded-lg">
+        <%!-- <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" /> --%>
+        <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
+        <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
+          <%= @event.user_name %> was third
         </span>
       </div>
     </div>
@@ -43,15 +71,17 @@ defmodule StreamerWeb.Overlay.EventComponents do
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
-         <%= @event.user_name %> cheered <%= @event.bits %> bits!
-         <img src={~p"/overlay/images/makeitrain.gif"}>
+          <%= @event.user_name %> cheered <%= @event.bits %> bits!
+          <img src={~p"/overlay/images/makeitrain.gif"} />
         </span>
       </div>
     </div>
     """
   end
 
-  def twitch_event(%{event: %Events.ChatNotification{raid: %TwitchEventSub.Fields.Raid{}}} = assigns) do
+  def twitch_event(
+        %{event: %Events.ChatNotification{raid: %TwitchEventSub.Fields.Raid{}}} = assigns
+      ) do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
@@ -69,8 +99,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
       <div class="relative rounded-lg">
         <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" />
         <span class="absolute text-center text-3xl font-semibold text-gray-800 [text-shadow:_1px_1px_0_rgb(255_255_255_/_50%)] left-0 right-0 top-4">
-          Hello, <%= @event.user_name %><br>
-          Thanks for following!
+          Hello, <%= @event.user_name %><br /> Thanks for following!
         </span>
       </div>
     </div>

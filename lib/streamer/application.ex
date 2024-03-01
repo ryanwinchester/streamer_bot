@@ -16,6 +16,7 @@ defmodule Streamer.Application do
       # {Streamer.Worker, arg},
       # Start to serve requests, typically the last entry
       StreamerWeb.Endpoint,
+      Streamer.SongPoller,
       {Streamer.SongQueue, Application.get_env(:streamer, Streamer.SongQueue, [])},
       {TwitchChat.Supervisor, Application.fetch_env!(:streamer, :bot)},
       {TwitchEventSub.Supervisor, Application.fetch_env!(:streamer, TwitchEventSub)}

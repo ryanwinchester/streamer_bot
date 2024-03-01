@@ -25,13 +25,13 @@ defmodule Streamer.SongQueue do
   @doc """
   Add a track to the queue.
   """
-  @spec add(String.t(), String.t()) ::
+  @spec add(track :: map(), user :: String.t()) ::
           :ok
           | {:error, :max_total}
           | {:error, :max_per_user}
           | {:error, :no_consecutive}
-  def add(track_id, user) do
-    GenServer.call(__MODULE__, {:add, track_id, user})
+  def add(track, user) do
+    GenServer.call(__MODULE__, {:add, track, user})
   end
 
   @doc """
@@ -106,7 +106,7 @@ defmodule Streamer.SongQueue do
 
   @doc false
   @impl GenServer
-  def handle_call({:add, track_id, user}, _from, state) do
+  def handle_call({:add, track, user}, _from, state) do
     {current_track, actual_tracks} = Streamer.SpotifyClient.get_queue!()
     queue = sync_queue(state.queue, current_track, actual_tracks)
     total = Enum.count(queue)
@@ -123,8 +123,8 @@ defmodule Streamer.SongQueue do
         {:reply, {:error, :no_consecutive}, state}
 
       true ->
-        Streamer.SpotifyClient.add_track_to_queue!(track_id)
-        {:reply, :ok, %{state | queue: [{track_id, user} | queue]}}
+        queue_track(track, user)
+        {:reply, :ok, %{state | queue: [{track["id"], user} | queue]}}
     end
   end
 
@@ -154,5 +154,16 @@ defmodule Streamer.SongQueue do
       end)
 
     queue
+  end
+
+  defp queue_track(track, user_name) do
+    Streamer.SpotifyClient.add_track_to_queue!(track["id"])
+
+    Streamer.Repo.insert!(%Streamer.SongRequest{
+      track_id: track["id"],
+      artists: Enum.map_join(track["artists"], ", ", & &1["name"]),
+      name: track["name"],
+      user_name: user_name
+    })
   end
 end

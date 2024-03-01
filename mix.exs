@@ -47,10 +47,9 @@ defmodule Streamer.MixProject do
       {:telemetry_poller, "~> 1.0"},
       {:jason, "~> 1.2"},
       {:dns_cluster, "~> 0.1.1"},
-
       {:bandit, "~> 1.0"},
       {:req, "~> 0.4.0"},
-
+      {:uuid_v7, "~> 0.1.0"},
       {:twitch_eventsub, path: "../../hellostream/twitch_eventsub"},
       {:twitch_chat, path: "../../hellostream/twitch_chat"}
     ]

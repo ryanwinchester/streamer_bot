@@ -11,6 +11,8 @@ defmodule Streamer.SongRequest do
   @type t :: %__MODULE__{
           id: UUIDv7.t(),
           track_id: String.t(),
+          artists: String.t(),
+          name: String.t(),
           user_name: String.t(),
           inserted_at: DateTime.t()
         }

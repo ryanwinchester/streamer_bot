@@ -26,7 +26,7 @@ defmodule StreamerWeb.OverlayLive do
   end
 
   @impl true
-  def handle_info({:twitch, %TwitchEventSub.Events.Follow{} = event}, socket) do
+  def handle_info({:twitch, "channel.follow" = type, event}, socket) do
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 4_000)
 
@@ -40,42 +40,46 @@ defmodule StreamerWeb.OverlayLive do
     socket =
       socket
       |> assign(:video, video)
-      |> update(:events, &[{id, event} | &1])
+      |> update(:events, &[{id, {type, event}} | &1])
 
     {:noreply, socket}
   end
 
-  def handle_info(
-        {:twitch,
-         %TwitchEventSub.Events.ChannelPointsRedemption{reward_title: "Vim mode"} = event},
-        socket
-      ) do
-    id = :erlang.phash2(event)
-    time = 5 * 60 * 1000
+  # # Vim mode reward. I'm using neovim now, so this is pointless.
+  # def handle_info(
+  #       {:twitch, "channel.channel_points_custom_reward_redemption.add" = type,
+  #        %{"reward" => %{"title" => "Vim mode"}} = event},
+  #       socket
+  #     ) do
+  #   id = :erlang.phash2(event)
+  #   time = 5 * 60 * 1000
+  #
+  #   Process.send_after(self(), {:timer_tick, 0, time, 1000}, 1000)
+  #
+  #   socket =
+  #     socket
+  #     |> update(:events, &[{id, {type, event}} | &1])
+  #     |> update(:timer, &%{&1 | active?: true, title: "VIM MODE", total: time, tick: time})
+  #
+  #   {:noreply, socket}
+  # end
 
-    Process.send_after(self(), {:timer_tick, 0, time, 1000}, 1000)
-
-    socket =
-      socket
-      |> update(:events, &[{id, event} | &1])
-      |> update(:timer, &%{&1 | active?: true, title: "VIM MODE", total: time, tick: time})
-
-    {:noreply, socket}
-  end
-
-  def handle_info({:twitch, %TwitchEventSub.Events.Cheer{} = event}, socket) do
+  def handle_info({:twitch, "channel.cheer" = type, event}, socket) do
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
 
     socket =
       socket
       |> push_event("falling-items", %{count: event.bits, img_src: ~p"/overlay/images/bit.gif"})
-      |> update(:events, &[{id, event} | &1])
+      |> update(:events, &[{id, {type, event}} | &1])
 
     {:noreply, socket}
   end
 
-  def handle_info({:twitch, %TwitchChat.Events.Raid{} = event}, socket) do
+  def handle_info(
+        {:twitch, "channel.chat.notification" = type, %{"notice_type" => "raid"} = event},
+        socket
+      ) do
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
 
@@ -85,15 +89,15 @@ defmodule StreamerWeb.OverlayLive do
         count: event.viewer_count,
         img_src: event.profile_image_url
       })
-      |> update(:events, &[{id, event} | &1])
+      |> update(:events, &[{id, {type, event}} | &1])
 
     {:noreply, socket}
   end
 
-  def handle_info({:twitch, event}, socket) do
+  def handle_info({:twitch, type, event}, socket) do
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
-    {:noreply, update(socket, :events, &[{id, event} | &1])}
+    {:noreply, update(socket, :events, &[{id, {type, event}} | &1])}
   end
 
   def handle_info({:remove_event, id}, socket) do

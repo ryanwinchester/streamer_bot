@@ -39,6 +39,6 @@ defmodule Streamer.TwitchChatBot do
 
   def handle_event(event) do
     super(event)
-    Streamer.broadcast("twitch:events", {:twitch, event})
+    # Streamer.broadcast("twitch:events", {:twitch, event})
   end
 end

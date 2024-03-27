@@ -1,6 +1,7 @@
 defmodule Streamer.TwitchEventHandler do
   use TwitchEventSub
 
+  alias TwitchEventSub.Events.ChannelPointsRedemption
   alias Streamer.SongQueue
   alias Streamer.SpotifyClient
 
@@ -10,12 +11,12 @@ defmodule Streamer.TwitchEventHandler do
 
   @impl true
   def handle_event(
-        "channel.channel_points_custom_reward_redemption.add" = type,
-        %{"reward" => %{"title" => "Queue Spotify Song"}} = event
+        "channel.channel_points_custom_reward_redemption.add",
+        %{"reward_title" => "Queue Spotify Song"} = event
       ) do
     link = event["user_input"]
     user = event["user_name"]
-    channel = event["broadcaster_user_login"]
+    channel = event["channel"]
 
     case link do
       "https://open.spotify.com/track" <> _ ->
@@ -34,10 +35,10 @@ defmodule Streamer.TwitchEventHandler do
         say(channel, "@#{user} must be a single spotify track link")
     end
 
-    Streamer.broadcast("twitch:events", {:twitch, type, event})
+    Streamer.broadcast("twitch:events", {:twitch, event})
   end
 
-  def handle_event(type, event) do
-    Streamer.broadcast("twitch:events", {:twitch, type, event})
+  def handle_event(event) do
+    Streamer.broadcast("twitch:events", {:twitch, event})
   end
 end

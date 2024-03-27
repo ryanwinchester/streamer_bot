@@ -11,6 +11,7 @@ config :streamer,
 
 # Twitch EventSub
 config :streamer, TwitchEventSub,
+  broadcaster_user_id: System.fetch_env!("TWITCH_USER_ID"),
   user_id: System.fetch_env!("TWITCH_USER_ID"),
   channel_ids: [System.fetch_env!("TWITCH_USER_ID")],
   handler: Streamer.TwitchEventHandler,

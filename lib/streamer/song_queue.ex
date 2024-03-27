@@ -7,6 +7,14 @@ defmodule Streamer.SongQueue do
   @max_per_user 2
   @max_total 50
 
+  @bad_taste_users ~w[
+    bradkilshaw
+  ]
+
+  @crap_music [
+    ~r/Nicki Minaj/i
+  ]
+
   @doc """
   Start the song queue server.
 
@@ -80,8 +88,8 @@ defmodule Streamer.SongQueue do
   def handle_cast({:remove, track_id}, state) do
     state =
       if List.keymember?(state.queue, track_id, 0) do
-        # I know this is stupid. I want to remove the last occurence and I
-        # don't want to use my brain. I'm tired. Leave me alone.
+        # I want to remove the last occurrence of the track.
+        # This is easy and it works. Shut up.
         queue = Enum.reverse(state.queue) |> List.keydelete(track_id, 0)
         %{state | queue: Enum.reverse(queue)}
       else
@@ -121,6 +129,12 @@ defmodule Streamer.SongQueue do
 
       match?([{_, ^user} | _], queue) and not state.allow_consecutive? ->
         {:reply, {:error, :no_consecutive}, state}
+
+      user in @bad_taste_users ->
+        {:reply, {:error, :poor_taste}, state}
+
+      # track["name"] in @bad_taste_users ->
+      #   {:reply, {:error, :poor_taste}, state}
 
       true ->
         queue_track(track, user)

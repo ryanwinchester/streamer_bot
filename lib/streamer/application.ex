@@ -19,7 +19,7 @@ defmodule Streamer.Application do
       Streamer.SongPoller,
       {Streamer.SongQueue, Application.get_env(:streamer, Streamer.SongQueue, [])},
       {TwitchChat.Supervisor, Application.fetch_env!(:streamer, :bot)},
-      {TwitchEventSub.Supervisor, Application.fetch_env!(:streamer, TwitchEventSub)}
+      {TwitchEventSub.WebSocket, Application.fetch_env!(:streamer, TwitchEventSub)}
     ]
 
     # See https://hexdocs.pm/elixir/Supervisor.html

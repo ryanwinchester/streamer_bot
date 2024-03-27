@@ -5,7 +5,7 @@
   <div id="exploding-items-container" class="relative top-96 right-0 left-0 w-1/2 mx-auto"></div>
 </div>
 <!-- Current song -->
-<div class="absolute z-14 w-1/5 bottom-4 left-4">
+<div class="absolute z-14 w-1/5 top-4 right-4">
   <div aria-live="assertive" class="flex items-end px-4 py-6 sm:items-start sm:p-6">
     <div class="flex w-full flex-col items-center space-y-4 sm:items-end">
       <!--
@@ -20,7 +20,7 @@
       -->
       <div
         :if={@current_song}
-        class="pointer-events-auto flex w-full max-w-md rounded-lg bg-gray-800 bg-opacity-75 shadow-lg ring-1 ring-black ring-opacity-5"
+        class="pointer-events-auto flex w-full max-w-md rounded-lg bg-gray-800 bg-opacity-90 shadow-lg ring-1 ring-black ring-opacity-5"
       >
         <div class="w-0 flex-1 p-4">
           <div class="flex items-center">
@@ -53,5 +53,11 @@
 </div>
 <!-- Events/Alerts -->
 <div id="alert-container" class="p-8 absolute w-full h-full top-0 z-10">
-  <.twitch_event :for={{id, event} <- @events} id={"event-#{id}"} event={event} {assigns} />
+  <.twitch_event
+    :for={{id, {type, event}} <- @events}
+    id={"event-#{id}"}
+    type={type}
+    event={event}
+    {assigns}
+  />
 </div>

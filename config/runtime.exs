@@ -9,14 +9,37 @@ config :streamer,
     channels: [System.fetch_env!("TWITCH_USER")]
   ]
 
+twitch_access_token =
+  case config_env() do
+    :prod ->
+      System.fetch_env!("TWITCH_ACCESS_TOKEN")
+
+    _ ->
+      File.read!(".twitch.json")
+      |> Jason.decode!()
+      |> Map.fetch!("access_token")
+  end
+
 # Twitch EventSub
 config :streamer, TwitchEventSub,
   broadcaster_user_id: System.fetch_env!("TWITCH_USER_ID"),
   user_id: System.fetch_env!("TWITCH_USER_ID"),
   channel_ids: [System.fetch_env!("TWITCH_USER_ID")],
   handler: Streamer.TwitchEventHandler,
-  client_id: System.get_env("TWITCH_CLIENT_ID"),
-  access_token: System.get_env("TWITCH_ACCESS_TOKEN")
+  client_id: System.fetch_env!("TWITCH_CLIENT_ID"),
+  access_token: twitch_access_token,
+  # TODO: Add channel.chat.message later.
+  subscriptions: ~w[
+      channel.chat.notification
+      channel.ad_break.begin channel.cheer channel.follow channel.subscription.end
+      channel.channel_points_custom_reward_redemption.add
+      channel.channel_points_custom_reward_redemption.update
+      channel.charity_campaign.donate channel.charity_campaign.progress
+      channel.goal.begin channel.goal.progress channel.goal.end
+      channel.hype_train.begin channel.hype_train.progress channel.hype_train.end
+      channel.shoutout.create channel.shoutout.receive
+      stream.online stream.offline
+  ]
 
 # Spotify API
 config :streamer, Streamer.SpotifyClient,
@@ -45,6 +68,9 @@ if System.get_env("PHX_SERVER") do
 end
 
 if config_env() == :prod do
+  # Twitch EventSub
+  config :streamer, TwitchEventSub, access_token: System.fetch_env!("TWITCH_ACCESS_TOKEN")
+
   database_url =
     System.get_env("DATABASE_URL") ||
       raise """

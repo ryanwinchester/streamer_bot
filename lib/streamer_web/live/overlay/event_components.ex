@@ -19,7 +19,6 @@ defmodule StreamerWeb.Overlay.EventComponents do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
-        <%!-- <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" /> --%>
         <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
           <%= @event["user_name"] %> was first
@@ -38,7 +37,6 @@ defmodule StreamerWeb.Overlay.EventComponents do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
-        <%!-- <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" /> --%>
         <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
           <%= @event["user_name"] %> was second
@@ -57,7 +55,6 @@ defmodule StreamerWeb.Overlay.EventComponents do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
-        <%!-- <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" /> --%>
         <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
           <%= @event["user_name"] %> was third
@@ -76,7 +73,6 @@ defmodule StreamerWeb.Overlay.EventComponents do
     ~H"""
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
-        <%!-- <video class="absolute" src={~p"/overlay/videos/#{@video}"} autoplay="true" /> --%>
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
           <%= @event["user_name"] %> wants you to drink water
         </span>

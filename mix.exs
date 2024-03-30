@@ -45,13 +45,14 @@ defmodule Streamer.MixProject do
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:telemetry_metrics, "~> 0.6"},
       {:telemetry_poller, "~> 1.0"},
-      {:jason, "~> 1.2"},
+      {:jason, "~> 1.4"},
       {:dns_cluster, "~> 0.1.1"},
       {:bandit, "~> 1.0"},
       {:req, "~> 0.4.0"},
       {:uuid_v7, "~> 0.1.0"},
-      {:twitch_eventsub, path: "../../hellostream/twitch_eventsub"},
       {:twitch_chat, path: "../../hellostream/twitch_chat"},
+      {:hello_twitch_eventsub, path: "../../hellostream/twitch_eventsub"},
+      {:hello_twitch_api, path: "../../hellostream/twitch_api", override: true},
       {:websockex, "~> 0.4.3"}
     ]
   end
@@ -64,13 +65,14 @@ defmodule Streamer.MixProject do
   # See the documentation for `Mix` for more info on aliases.
   defp aliases do
     [
-      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
-      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
-      "ecto.reset": ["ecto.drop", "ecto.setup"],
-      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
       "assets.setup": ["tailwind.install --if-missing", "esbuild.install --if-missing"],
       "assets.build": ["tailwind default", "esbuild default"],
-      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"]
+      "assets.deploy": ["tailwind default --minify", "esbuild default --minify", "phx.digest"],
+      "ecto.setup": ["ecto.create", "ecto.migrate", "run priv/repo/seeds.exs"],
+      "ecto.reset": ["ecto.drop", "ecto.setup"],
+      setup: ["deps.get", "ecto.setup", "assets.setup", "assets.build"],
+      test: ["ecto.create --quiet", "ecto.migrate --quiet", "test"],
+      "twitch.reset": ["twitch.revoke --json", "twitch.auth --json"]
     ]
   end
 end

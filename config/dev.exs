@@ -1,5 +1,6 @@
 import Config
 
+# Song Queue
 config :streamer, Streamer.SongQueue,
   max_per_user: 3,
   allow_consecutive?: true

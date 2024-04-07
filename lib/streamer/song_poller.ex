@@ -6,7 +6,11 @@ defmodule Streamer.SongPoller do
   @interval 5000
 
   def start_link(opts) do
-    GenServer.start_link(__MODULE__, opts)
+    GenServer.start_link(__MODULE__, opts, name: __MODULE__)
+  end
+
+  def get_current_track do
+    GenServer.call(__MODULE__, :get_current_track)
   end
 
   def init(_opts) do
@@ -16,6 +20,10 @@ defmodule Streamer.SongPoller do
   def handle_continue(:start, state) do
     send(self(), :poll)
     {:noreply, state}
+  end
+
+  def handle_call(:get_current_track, _from, state) do
+    {:reply, state.song, state}
   end
 
   def handle_info(:poll, state) do
@@ -33,7 +41,7 @@ defmodule Streamer.SongPoller do
 
           Streamer.broadcast(
             "songs:current",
-            {:current_song, Map.put(song, :requester, requester)}
+            {:current_song, %{song | requester: requester}}
           )
 
           %{state | song: song}
@@ -56,7 +64,7 @@ defmodule Streamer.SongPoller do
             _ -> nil
           end
 
-        %{id: track["id"], artists: artists, track: track["name"], image: image}
+        %{id: track["id"], artists: artists, track: track["name"], image: image, requester: nil}
 
       _track ->
         nil

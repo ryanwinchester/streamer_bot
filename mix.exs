@@ -19,7 +19,7 @@ defmodule Streamer.MixProject do
   def application do
     [
       mod: {Streamer.Application, []},
-      extra_applications: [:logger, :runtime_tools]
+      extra_applications: [:logger, :runtime_tools, :wx, :observer]
     ]
   end
 

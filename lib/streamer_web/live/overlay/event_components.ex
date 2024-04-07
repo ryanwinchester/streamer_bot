@@ -101,7 +101,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
     <div class={["absolute mx-auto w-1/3 left-0 right-0", @class]}>
       <div class="relative rounded-lg">
         <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
-          Raid from <%= @event["raid"].user_name %> with <%= @event["raid"].viewer_count %> viewers
+          Raid from <%= @event["raid"]["user_name"] %> with <%= @event["raid"]["viewer_count"] %> viewers
         </span>
       </div>
     </div>

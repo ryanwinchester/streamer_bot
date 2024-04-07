@@ -1,6 +1,7 @@
 defmodule StreamerWeb.OverlayLive do
   use StreamerWeb, :live_view
 
+  alias Streamer.SongPoller
   alias StreamerWeb.Live.Overlay.TimerLive
 
   require Logger
@@ -19,7 +20,7 @@ defmodule StreamerWeb.OverlayLive do
     socket =
       socket
       |> assign(:timer, @empty_timer)
-      |> assign(:current_song, nil)
+      |> assign(:current_song, SongPoller.get_current_track())
       |> assign(:events, [])
 
     {:ok, socket}
@@ -70,7 +71,7 @@ defmodule StreamerWeb.OverlayLive do
 
     socket =
       socket
-      |> push_event("falling-items", %{count: event.bits, img_src: ~p"/overlay/images/bit.gif"})
+      |> push_event("falling-items", %{count: event["bits"], img_src: ~p"/overlay/images/bit.gif"})
       |> update(:events, &[{id, {type, event}} | &1])
 
     {:noreply, socket}
@@ -80,14 +81,15 @@ defmodule StreamerWeb.OverlayLive do
         {:twitch, "channel.chat.notification" = type, %{"notice_type" => "raid"} = event},
         socket
       ) do
+    raid = event["raid"]
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
 
     socket =
       socket
       |> push_event("exploding-items", %{
-        count: event.viewer_count,
-        img_src: event.profile_image_url
+        count: raid["viewer_count"],
+        img_src: raid["profile_image_url"]
       })
       |> update(:events, &[{id, {type, event}} | &1])
 

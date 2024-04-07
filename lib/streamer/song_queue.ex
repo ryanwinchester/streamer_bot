@@ -8,7 +8,7 @@ defmodule Streamer.SongQueue do
   @max_total 50
 
   @bad_taste_users ~w[
-    bradkilshaw
+    bradki1shaw
   ]
 
   @crap_music [

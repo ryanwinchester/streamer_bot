@@ -11,9 +11,9 @@ defmodule Streamer.SongQueue do
     bradkilshaw
   ]
 
-  @crap_music [
-    ~r/Nicki Minaj/i
-  ]
+  # @crap_music [
+  #   ~r/Nicki Minaj/i
+  # ]
 
   @doc """
   Start the song queue server.
@@ -38,6 +38,7 @@ defmodule Streamer.SongQueue do
           | {:error, :max_total}
           | {:error, :max_per_user}
           | {:error, :no_consecutive}
+          | {:error, :poor_taste}
   def add(track, user) do
     GenServer.call(__MODULE__, {:add, track, user})
   end

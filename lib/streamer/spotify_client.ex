@@ -83,8 +83,12 @@ defmodule Streamer.SpotifyClient do
       refresh_token: refresh_token
     } = Application.fetch_env!(:streamer, __MODULE__) |> Map.new()
 
-    token = get_access_token!(client_id, client_secret, refresh_token)["access_token"]
+    case get_access_token!(client_id, client_secret, refresh_token) do
+      %{"access_token" => access_token} ->
+        Req.Request.put_header(request, "authorization", "Bearer #{access_token}")
 
-    Req.Request.put_header(request, "authorization", "Bearer #{token}")
+      body ->
+        raise "[Streamer.SpotifyClient] no access token in response: #{inspect(body)}"
+    end
   end
 end

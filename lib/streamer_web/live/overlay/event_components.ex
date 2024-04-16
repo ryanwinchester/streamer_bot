@@ -13,7 +13,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
   def twitch_event(
         %{
           type: "channel.channel_points_custom_reward_redemption.add",
-          event: %{"reward_title" => "first"}
+          event: %{"reward" => %{"title" => "first"}}
         } = assigns
       ) do
     ~H"""
@@ -31,7 +31,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
   def twitch_event(
         %{
           type: "channel.channel_points_custom_reward_redemption.add",
-          event: %{"reward_title" => "second"}
+          event: %{"reward" => %{"title" => "second"}}
         } = assigns
       ) do
     ~H"""
@@ -49,7 +49,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
   def twitch_event(
         %{
           type: "channel.channel_points_custom_reward_redemption.add",
-          event: %{"reward_title" => "third"}
+          event: %{"reward" => %{"title" => "third"}}
         } = assigns
       ) do
     ~H"""
@@ -67,7 +67,7 @@ defmodule StreamerWeb.Overlay.EventComponents do
   def twitch_event(
         %{
           type: "channel.channel_points_custom_reward_redemption.add",
-          event: %{"reward_title" => "Hydrate!"}
+          event: %{"reward" => %{"title" => "Hydrate!"}}
         } = assigns
       ) do
     ~H"""
@@ -149,16 +149,52 @@ defmodule StreamerWeb.Overlay.EventComponents do
 
   def twitch_event(%{type: "channel.subscribe", event: %{"is_gift" => true}} = assigns) do
     ~H"""
+    <%!--
+    <div class="hidden">
+      <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
+    </div>
+    --%>
+    """
+  end
+
+  def twitch_event(
+        %{type: "channel.chat.notification", event: %{"notice_type" => "resub"}} = assigns
+      ) do
+    ~H"""
     <div class={["mx-auto w-1/3 rounded-lg", @class]}>
-      <video src={~p"/overlay/videos/earth-blaster.webm"} autoplay="true" />
+      <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
+        <%= @event["user_name"] %> subscribed! What a gigachad!
+      </span>
+      <video src={~p"/overlay/videos/earth-blaster.webm"} autoplay="true"></video>
     </div>
     """
   end
 
-  def twitch_event(%{type: "channel.subscribe"} = assigns) do
+  def twitch_event(
+        %{type: "channel.chat.notification", event: %{"notice_type" => "sub"}} = assigns
+      ) do
     ~H"""
-    <div class="hidden">
-      <audio src={~p"/overlay/audio/yippee.mp3"} autoplay="true" />
+    <div class={["mx-auto w-1/3 rounded-lg", @class]}>
+      <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
+        <%= @event["user_name"] %> subscribed! What a gigachad!
+      </span>
+      <video src={~p"/overlay/videos/earth-blaster.webm"} autoplay="true"></video>
+    </div>
+    """
+  end
+
+  def twitch_event(
+        %{type: "channel.chat.notification", event: %{"notice_type" => "sub_gift"}} = assigns
+      ) do
+    ~H"""
+    <div class={["mx-auto w-1/3 rounded-lg", @class]}>
+      <span class="absolute text-center text-3xl font-semibold text-gray-50 left-0 right-0 top-4">
+        <%= @event["chatter_user_name"] || "Anonymous" %> gifted a sub to <%= get_in(@event, [
+          "sub_gift",
+          "recipient_user_name"
+        ]) || "???" %> What a gigachad!
+      </span>
+      <video src={~p"/overlay/videos/earth-blaster.webm"} autoplay="true"></video>
     </div>
     """
   end

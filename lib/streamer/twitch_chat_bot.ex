@@ -12,7 +12,7 @@ defmodule Streamer.TwitchChatBot do
 
   @impl true
   def handle_event(%Message{message: "!ide", channel: channel, display_name: user}) do
-    say(channel, "#{user}, I'm mostly using Zed lately (https://zed.dev)")
+    say(channel, "#{user}, I'm mostly using Neovim lately... I also like Zed")
   end
 
   def handle_event(%Message{message: "!song link", channel: channel, display_name: user}) do
@@ -38,7 +38,8 @@ defmodule Streamer.TwitchChatBot do
   end
 
   def handle_event(event) do
-    super(event)
+    Logger.debug("[Chat] unhandled event: #{inspect(event)}")
+    # super(event)
     # Streamer.broadcast("twitch:events", {:twitch, event})
   end
 end

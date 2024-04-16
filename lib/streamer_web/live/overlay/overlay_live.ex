@@ -97,6 +97,7 @@ defmodule StreamerWeb.OverlayLive do
   end
 
   def handle_info({:twitch, type, event}, socket) do
+    Logger.debug("[OverlayLive] got event #{type}")
     id = :erlang.phash2(event)
     Process.send_after(self(), {:remove_event, id}, 10_000)
     {:noreply, update(socket, :events, &[{id, {type, event}} | &1])}

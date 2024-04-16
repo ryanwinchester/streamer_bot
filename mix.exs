@@ -51,7 +51,8 @@ defmodule Streamer.MixProject do
       {:req, "~> 0.4.0"},
       {:uuid_v7, "~> 0.1.0"},
       {:twitch_chat, path: "../../hellostream/twitch_chat"},
-      {:hello_twitch_eventsub, path: "../../hellostream/twitch_eventsub"},
+      {:hello_twitch_eventsub, path: "../../hellostream/twitch_eventsub", override: true},
+      # {:hello_twitch_eventsub, "~> 0.1.3"},
       {:hello_twitch_api, path: "../../hellostream/twitch_api", override: true},
       {:websockex, "~> 0.4.3"}
     ]

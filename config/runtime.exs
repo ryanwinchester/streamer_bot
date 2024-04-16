@@ -9,23 +9,13 @@ config :streamer,
     channels: [System.fetch_env!("TWITCH_USER")]
   ]
 
-twitch_auth =
+twitch_access_token =
   case config_env() do
     :prod ->
-      client_id = System.fetch_env!("TWITCH_CLIENT_ID")
-      client_secret = System.fetch_env!("TWITCH_CLIENT_SECRET")
       access_token = System.fetch_env!("TWITCH_ACCESS_TOKEN")
-      refresh_token = System.get_env("TWITCH_REFRESH_TOKEN")
-
-      TwitchAPI.Auth.new(client_id, client_secret, access_token, refresh_token)
 
     _ ->
-      client_id = System.fetch_env!("TWITCH_CLIENT_ID")
-      client_secret = System.fetch_env!("TWITCH_CLIENT_SECRET")
-      auth_params = File.read!(".twitch.json") |> Jason.decode!()
-
-      TwitchAPI.Auth.new(client_id, client_secret)
-      |> TwitchAPI.Auth.merge_string_params(auth_params)
+      File.read!(".twitch.json") |> Jason.decode!() |> Map.fetch!("access_token")
   end
 
 # Twitch EventSub
@@ -34,7 +24,9 @@ config :streamer, TwitchEventSub,
   user_id: System.fetch_env!("TWITCH_USER_ID"),
   channel_ids: [System.fetch_env!("TWITCH_USER_ID")],
   handler: Streamer.TwitchEventHandler,
-  auth: twitch_auth,
+  client_id: System.fetch_env!("TWITCH_CLIENT_ID"),
+  client_secret: System.fetch_env!("TWITCH_CLIENT_SECRET"),
+  access_token: twitch_access_token,
   # TODO: Add channel.chat.message later.
   subscriptions: ~w[
       channel.chat.notification

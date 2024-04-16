@@ -38,6 +38,7 @@ defmodule Streamer.TwitchEventHandler do
   end
 
   def handle_event(type, event) do
+    Logger.debug("[EventHandler] broadcasting `#{type}`")
     Streamer.broadcast("twitch:events", {:twitch, type, event})
   end
 end

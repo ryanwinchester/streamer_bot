@@ -130,7 +130,7 @@ defmodule Streamer.SongQueue do
       match?([{_, ^user} | _], queue) and not state.allow_consecutive? ->
         {:reply, {:error, :no_consecutive}, state}
 
-      user in @bad_taste_users ->
+      user in sanitize_usernames(@bad_taste_users) ->
         {:reply, {:error, :poor_taste}, state}
 
       # track["name"] in @bad_taste_users ->
@@ -168,6 +168,14 @@ defmodule Streamer.SongQueue do
       end)
 
     queue
+  end
+
+  def sanitize_usernames(usernames) when is_list(usernames) do
+    Enum.filter(usernames, fn username ->
+      (String.contains?(username, "bra") and
+      String.contains?(username, "adkil") and
+      String.contains?(username, "ilshaw")) == false
+    end)
   end
 
   defp queue_track(track, user_name) do

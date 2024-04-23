@@ -9,24 +9,24 @@ config :streamer,
     channels: [System.fetch_env!("TWITCH_USER")]
   ]
 
-twitch_access_token =
-  case config_env() do
-    :prod ->
-      access_token = System.fetch_env!("TWITCH_ACCESS_TOKEN")
+# twitch_access_token =
+#   case config_env() do
+#     :prod ->
+#       access_token = System.fetch_env!("TWITCH_ACCESS_TOKEN")
 
-    _ ->
-      File.read!(".twitch.json") |> Jason.decode!() |> Map.fetch!("access_token")
-  end
+#     _ ->
+#       File.read!(".twitch.json") |> Jason.decode!() |> Map.fetch!("access_token")
+#   end
 
 # Twitch EventSub
 config :streamer, TwitchEventSub,
-  broadcaster_user_id: System.fetch_env!("TWITCH_USER_ID"),
+  auth_store_name: Streamer.TwitchAuthStore,
   user_id: System.fetch_env!("TWITCH_USER_ID"),
   channel_ids: [System.fetch_env!("TWITCH_USER_ID")],
   handler: Streamer.TwitchEventHandler,
-  client_id: System.fetch_env!("TWITCH_CLIENT_ID"),
-  client_secret: System.fetch_env!("TWITCH_CLIENT_SECRET"),
-  access_token: twitch_access_token,
+  # client_id: System.fetch_env!("TWITCH_CLIENT_ID"),
+  # client_secret: System.fetch_env!("TWITCH_CLIENT_SECRET"),
+  # access_token: twitch_access_token,
   # TODO: Add channel.chat.message later.
   subscriptions: ~w[
       channel.chat.notification
